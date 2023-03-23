@@ -1,0 +1,10 @@
+__pycache__/
+
+.Python
+
+.svn/
+
+instance/
+.webassets-cache
+.env
+env/
