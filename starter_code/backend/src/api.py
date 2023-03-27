@@ -30,7 +30,17 @@ db_drop_and_create_all()
 '''
 @app.route('/drinks')
 def get_drinks():
-    return 'not implemented'
+    try:
+        drinks = Drink.query.all()
+    except:
+        abort(500)
+    drink_list = []
+    for drink in drinks:
+        drink_list.append(drink.short())
+    return jsonify({
+        'success': True,
+        'drinks': drink_list
+    }), 200
 '''
 @TODO implement endpoint
     GET /drinks-detail
@@ -43,10 +53,16 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(payload):
     try:
-        print(payload)
-        return 'not implemented'
+        drinks = Drink.query.all()
     except:
-        abort(401)
+        abort(500)
+    drink_list = []
+    for drink in drinks:
+        drink_list.append(drink.long())
+    return jsonify({
+        'success': True,
+        'drinks': drink_list
+    }), 200
 
 '''
 @TODO implement endpoint
