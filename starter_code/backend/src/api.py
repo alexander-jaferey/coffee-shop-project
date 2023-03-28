@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
 from flask_cors import CORS
+from sys import exc_info
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth, get_token_auth_header
@@ -12,7 +13,7 @@ setup_db(app)
 CORS(app)
 
 '''
-@TODO uncomment the following line to initialize the datbase
+@DONE uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
@@ -21,7 +22,7 @@ db_drop_and_create_all()
 
 # ROUTES
 '''
-@TODO implement endpoint
+@DONE implement endpoint
     GET /drinks
         it should be a public endpoint
         it should contain only the drink.short() data representation
@@ -42,7 +43,7 @@ def get_drinks():
         'drinks': drink_list
     }), 200
 '''
-@TODO implement endpoint
+@DONE implement endpoint
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
         it should contain the drink.long() data representation
@@ -73,6 +74,25 @@ def get_drinks_detail(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def post_drinks(payload):
+    try:
+        body = request.get_json()
+        title = body.get('title', None)
+        recipe = body.get('recipe', None)
+        if title is None or body is None:
+            print(exc_info())
+            abort(400)
+        drink = Drink(title=title, recipe=json.dumps(recipe))
+        drink.insert()
+    except:
+        print(exc_info())
+        abort(422)
+    return jsonify({
+        'success': True,
+        'drinks': [drink.long()]
+    }), 200
 
 
 '''
