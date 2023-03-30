@@ -36,6 +36,8 @@ db_drop_and_create_all()
 def get_drinks():
     try:
         drinks = Drink.query.all()
+        if drinks is None:
+            return jsonify({"success": True, "drinks": None}), 200
     except:
         abort(500)
     drink_list = []
@@ -59,6 +61,8 @@ def get_drinks():
 def get_drinks_detail(payload):
     try:
         drinks = Drink.query.all()
+        if drinks is None:
+            return jsonify({"success": True, "drinks": None}), 200
     except:
         abort(500)
     drink_list = []
